@@ -5,7 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def V1(D=None, P=None, m=None, k1=None, k2=None, HB=None):
-    """Швидкість різання машинними мітчиками зі сталі Р6М5 [Якухин, т.38]
+    """Швидкість різання машинними мітчиками зі сталі Р6М5 [Якухин, т.38].
+    Більше значення треба приймати для різьб з більшими діаметрами і меньшими кроками
     D - діаметр різьби, мм
     P - крок, мм,
     m - матеріал
@@ -73,30 +74,6 @@ def V1pd():
         V[c+'min']=pd.Series([i for i,j in V[c]])
         V[c+'max']=pd.Series([j for i,j in V[c]])
     return V
-
-V=V1pd()
-X=(V['Dmax']+V['Dmin'])/2
-
-plt.plot(X.values, V['Pmin'].values, 'k-')
-plt.plot(X.values, V['Pmax'].values, 'k-')
-plt.xlabel('D, мм'); plt.ylabel('Pmin, Pmax, мм')
-plt.show()
-
-plt.plot(X.values, V['Сталь конструкційнаmin'].values, 'k-')
-plt.plot(X.values, V['Сталь конструкційнаmax'].values, 'k-')
-plt.plot(X.values[:-1], V['Чавунmin'].values[:-1], 'k--')
-plt.plot(X.values[:-1], V['Чавунmax'].values[:-1], 'k--')
-plt.plot(X.values[:-2], V['Термореактивні пластмассиmin'].values[:-2], 'k:')
-plt.plot(X.values[:-2], V['Термореактивні пластмассиmax'].values[:-2], 'k:')
-plt.xlabel('D, мм'); plt.ylabel('V, м/хв')
-plt.show()
-
-plt.plot(X.values[:-2], V['Сталь корозостійка та жароміцнаmin'].values[:-2], 'k-')
-plt.plot(X.values[:-2], V['Сталь корозостійка та жароміцнаmax'].values[:-2], 'k-')
-plt.plot(X.values, V['Кольорові сплавиmin'].values, 'k--')
-plt.plot(X.values, V['Кольорові сплавиmax'].values, 'k--')
-plt.xlabel('D, мм'); plt.ylabel('V, м/хв')
-plt.show()
 
 # Розрахунок швидкості різання гвинторізними головками з дисковими гребінками та круглими плашками
 def V_dcrd(d, P, m, q, phi, K1, K2, K3, k_1, k_2, k_3):
@@ -216,3 +193,39 @@ def V_tap( P, d, nb, m, m1, k_1, k_2, k_3):
     K2={"Коефіцієнт матеріалу заготовки":{(copper):(1.0),(brass):(0.7),(steel):(0.55),(aluminium):(1.4)}}
     K3={"Коефіцієнт матеріалу мітчика":{(P6M5):(1.0),(P18):(1.3),(P9F5):(1.7)}}
     return V[P][d]*K1[k_1][hb]*K2[k_2][m]*K3[k_3][m1]
+
+if __name__=="__main__":
+    V=V1pd()
+    X=(V['Dmax']+V['Dmin'])/2
+
+    plt.plot(X.values, V['Pmin'].values, 'k-')
+    plt.plot(X.values, V['Pmax'].values, 'k-')
+    plt.xlabel('D, мм'); plt.ylabel('Pmin, Pmax, мм')
+    plt.title("""Залежність мінімального та максимального кроку різьби
+від її діаметра під час нарізання машинним мітчиком""")
+    plt.show()
+
+    plt.plot(X.values, V['Сталь конструкційнаmin'].values, 'k-')
+    plt.plot(X.values, V['Сталь конструкційнаmax'].values, 'k-')
+    plt.plot(X.values[:-1], V['Чавунmin'].values[:-1], 'k--')
+    plt.plot(X.values[:-1], V['Чавунmax'].values[:-1], 'k--')
+    plt.plot(X.values[:-2], V['Термореактивні пластмассиmin'].values[:-2], 'k:')
+    plt.plot(X.values[:-2], V['Термореактивні пластмассиmax'].values[:-2], 'k:')
+    plt.xlabel('D, мм'); plt.ylabel('Vmin, Vmax м/хв')
+    plt.title("""Залежність максимальної і мінімальної швидкості різання від
+діаметра різьби для нарізання машинним мітчиком зі сталі Р6М5""")
+    plt.text(5,20,"""сталь конструкційна (-)
+чавун (- -)
+термореактивні пластмаси (...)""")
+    plt.show()
+
+    plt.plot(X.values[:-2], V['Сталь корозостійка та жароміцнаmin'].values[:-2], 'k-')
+    plt.plot(X.values[:-2], V['Сталь корозостійка та жароміцнаmax'].values[:-2], 'k-')
+    plt.plot(X.values, V['Кольорові сплавиmin'].values, 'k--')
+    plt.plot(X.values, V['Кольорові сплавиmax'].values, 'k--')
+    plt.xlabel('D, мм'); plt.ylabel('Vmin, Vmax, м/хв')
+    plt.title("""Залежність максимальної і мінімальної швидкості різання від
+діаметра різьби для нарізання машинним мітчиком зі сталі Р6М5""")
+    plt.text(5,20,"""сталь корозостійка та жароміцна (-)
+кольорові сплави (- -)""")
+    plt.show()

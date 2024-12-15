@@ -39,7 +39,7 @@ def doc2dict(s):
 def extdoc(f, d):
     """Доповнює документацію функції f інформацією про аргументи, якщо вона є в словнику d"""
     from inspect import getfullargspec
-    fargs=inspect.getfullargspec(f).args
+    fargs=getfullargspec(f).args
     for arg in fargs:
         argdoc=d.get(arg)
         if argdoc!=None:
@@ -119,54 +119,55 @@ def T18(n_i, n_z, t_k):
     return n_i/n_z+t_k
 
 ##
-import numpy as np
-import matplotlib.pyplot as plt
-L=np.arange(0.0, 100, 1)
-P=1
-n=1000
-plt.plot(L, T1(L, P, n), 'r-', lw=2) # label='T1'
-plt.plot(L, T2(L, P, n, 2000), 'k:', lw=2)
-plt.plot(L, T7(L, P, n), 'r--', lw=2)
-plt.plot(L, T8(L, P, 5000, 10), 'k-', lw=2)
-plt.plot(L, T9(10, 0.5, 4, 100)*L/L, 'k--', lw=2) # *P/P потрібне для масиву
-plt.xlabel("L, мм"); plt.ylabel("To, хв");
-plt.legend([f for f in "T1 T2 T7 T8 T9".split()])
-#plt.legend(['$'+fn2latex(f)+'$' for f in (T1,T2,T7,T8,T9)])
-plt.show()
-##
-L=50
-P=np.arange(1, 5, 0.1)
-plt.plot(P, T1(L, P, n), 'r-', lw=2)
-plt.plot(P, T2(L, P, n, 2000), 'k:', lw=2)
-plt.plot(P, T7(L, P, n), 'r--', lw=2)
-plt.plot(P, T8(L, P, 5000, 10), 'k-', lw=2)
-plt.plot(P, T9(10, 0.5, 4, 100)*P/P, 'k--', lw=2) # *P/P потрібне для масиву
-plt.legend([f for f in "T1 T2 T7 T8 T9".split()])
-plt.xlabel("P, мм"); plt.ylabel("To, хв")
-plt.show()
-##
+if __name__=="__main__":
+    import numpy as np
+    import matplotlib.pyplot as plt
+    L=np.arange(0.0, 100, 1)
+    P=1
+    n=1000
+    plt.plot(L, T1(L, P, n), 'r-', lw=2) # label='T1'
+    plt.plot(L, T2(L, P, n, 2000), 'k:', lw=2)
+    plt.plot(L, T7(L, P, n), 'r--', lw=2)
+    plt.plot(L, T8(L, P, 5000, 10), 'k-', lw=2)
+    plt.plot(L, T9(10, 0.5, 4, 100)*L/L, 'k--', lw=2) # *P/P потрібне для масиву
+    plt.xlabel("L, мм"); plt.ylabel("To, хв");
+    plt.legend([f for f in "T1 T2 T7 T8 T9".split()])
+    #plt.legend(['$'+fn2latex(f)+'$' for f in (T1,T2,T7,T8,T9)])
+    plt.show()
+    ##
+    L=50
+    P=np.arange(1, 5, 0.1)
+    plt.plot(P, T1(L, P, n), 'r-', lw=2)
+    plt.plot(P, T2(L, P, n, 2000), 'k:', lw=2)
+    plt.plot(P, T7(L, P, n), 'r--', lw=2)
+    plt.plot(P, T8(L, P, 5000, 10), 'k-', lw=2)
+    plt.plot(P, T9(10, 0.5, 4, 100)*P/P, 'k--', lw=2) # *P/P потрібне для масиву
+    plt.legend([f for f in "T1 T2 T7 T8 T9".split()])
+    plt.xlabel("P, мм"); plt.ylabel("To, хв")
+    plt.show()
+    ##
 
-from example2 import *
-# розширити документацію
-for f in [T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18]:
-    f.__doc__+="\n\n$$"+fn2latex(f)+"$$\n"
-    extdoc(f, doc2dict(__doc__))
+    from example2 import *
+    # розширити документацію
+    for f in [T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18]:
+        f.__doc__+="\n\n$$"+fn2latex(f)+"$$\n"
+        extdoc(f, doc2dict(__doc__))
 
-##
-fn2sympy(T7)
-fn2sympy(T7, P=2)
-fn2latex(T7)
-fndoc(T7)
-T7.__doc__
-fn_solve(T7, 0.1, L=10, P=2, g=1, i=1)
-fn_solve(T7, 0.1, L=10, P=sympy.S("P"), g=1, i=1)
+    ##
+    fn2sympy(T7)
+    fn2sympy(T7, P=2)
+    fn2latex(T7)
+    fndoc(T7)
+    T7.__doc__
+    fn_solve(T7, 0.1, L=10, P=2, g=1, i=1)
+    fn_solve(T7, 0.1, L=10, P=sympy.S("P"), g=1, i=1)
 
-##
-eq1=fn2sympy(T7)
-print(eq1)
-eq2=fn2sympy(T9)
-print(eq2)
-sol=sympy.solve(sympy.Eq(eq1.rhs, eq2.rhs), "L")
-print(sol)
-sol=sympy.solve(sympy.Eq(eq1.rhs, eq2.rhs), "P")
-print(sol)
+    ##
+    eq1=fn2sympy(T7)
+    print(eq1)
+    eq2=fn2sympy(T9)
+    print(eq2)
+    sol=sympy.solve(sympy.Eq(eq1.rhs, eq2.rhs), "L")
+    print(sol)
+    sol=sympy.solve(sympy.Eq(eq1.rhs, eq2.rhs), "P")
+    print(sol)
